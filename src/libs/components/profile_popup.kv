@@ -1,0 +1,60 @@
+#:kivy 2.1.0
+
+<ProfilePopup@MDRelativeLayout>:
+    size_hint_y: None
+    height: dp(240) + status.height
+    MDRelativeLayout:
+        pos_hint: {'center_x': 0.5,'center_y': 0.5}
+        elevation: 6
+        md_bg_color: app.colors["AccentColor"]
+        radius: [20, 20, 20, 20]
+        FitImage:
+            id: image
+            source: root.avatar_url
+            x: dp(20)
+            size_hint: None, None
+            size: [dp(100), dp(100)]
+            radius: [dp(64)]
+            y: self.parent.height - dp(120)
+        MDLabel:
+            size_hint: None, None
+            text: root.display_name if root.display_name else root.username
+            font_name: "InterM"
+            font_size: "24sp"
+            color: app.colors["MainColor"]
+            y: self.parent.height - dp(60)
+            x: dp(140)
+            text_size: root.width - dp(160), dp(40)
+            size: self.texture_size
+            shorten: True
+            shorten_from: "right"
+        MDLabel:
+            size_hint: None, None
+            text: "@" + root.username
+            font_name: "InterR"
+            font_size: "20sp"
+            color: app.colors["MainColor"]
+            y: self.parent.height - dp(100)
+            x: dp(140)
+            text_size: root.width - dp(160), dp(40)
+            size: self.texture_size
+            shorten: True
+            shorten_from: "right"
+        MDLabel:
+            id: status
+            size_hint: None, None
+            text: root.status
+            font_name: "InterR"
+            font_size: "20sp"
+            color: app.colors["MainColor"]
+            y: self.parent.height - dp(168) - self.height
+            x: dp(72)
+            text_size: root.width - dp(92), None
+            size: self.texture_size
+        FitImage:
+            source: "assets/icons/info.png"
+            x: dp(20)
+            size_hint: None, None
+            size: [dp(32), dp(32)]
+            radius: [dp(64)]
+            y: self.parent.height - dp(200)

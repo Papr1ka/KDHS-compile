@@ -1,0 +1,311 @@
+#:kivy 2.1.0
+#:set font "Nunito"
+
+<MainScreen>:
+    name: "main_screen"
+
+<MessagesScreen>:
+    name: "messages_screen"
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            id: messages_top_bar
+            title: app.current_destination_username
+            left_action_items: [["arrow-left", lambda x: app.screen_manager.switch_screen('main_screen')]]
+            right_action_items: [["badge-account-horizontal-outline", lambda x: root.show_user_profile()]]
+            md_bg_color: app.colors['UpLineColor']
+            text_color: app.colors['MainColor']
+        
+        RecycleView:
+            id: messages_rv
+            data: app.messages
+            do_scroll_x: False
+            do_scroll_y: True
+            viewclass: "ChatBubble"
+            scroll_wheel_distance: 60
+            canvas.before:
+                Color:
+                    rgba: app.colors["MassageScreenColor"]
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            RecycleBoxLayout:
+                id: rm_box
+                padding: dp(16)
+                spacing: dp(16)
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_size[1]
+                default_size_hint: 0.8, None
+                default_size: None, None
+
+        MDFloatLayout:
+            size_hint_y: None
+            height: dp(52)
+            TextInputString:
+                id: text_input
+
+
+<MessagesLayout>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            id: top_bar
+            title: app.current_destination_username
+            right_action_items: [["badge-account-horizontal-outline", lambda x: root.show_user_profile()]] if app.selected_chat_id != "" else []
+            
+            md_bg_color: app.colors['UpLineColor']
+            text_color: app.colors['MainColor']
+        
+        RecycleView:
+            id: messages_rv
+            data: app.messages
+            do_scroll_x: False
+            do_scroll_y: True
+            viewclass: "ChatBubble"
+            scroll_wheel_distance: 60
+            canvas.before:
+                Color:
+                    rgba: app.colors["MassageScreenColor"]
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            RecycleBoxLayout:
+                id: rm_box
+                padding: dp(16)
+                spacing: dp(16)
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_size[1]
+                default_size_hint: 0.8, None
+                default_size: None, None
+
+        MDFloatLayout:
+            size_hint_y: None
+            height: dp(52)
+            TextInputString:
+                id: text_input
+
+<MainBackground@MDFloatLayout>:
+    md_bg_color: app.colors['ThirdAccentColor']
+
+
+<SidebarNavigation@MDNavigationDrawer>:
+    type: "modal"
+    md_bg_color: app.colors['AccentColor']
+    padding: 0, 0, 0, 0
+    radius: 0
+    MDNavigationDrawerMenu:
+
+        MDFloatLayout:
+            size_hint_y: None
+            height: dp(60)
+            FitImage:
+                source: root.icon_source if root.icon_source != 'assets/icons/user.png' else ''
+                size_hint: None, None
+                size: self.parent.width, self.parent.parent.height
+                pos_hint: {'bottom': 1, 'center_x': 0.5}
+            FitImage:
+                source: root.icon_source
+                size_hint: None, None
+                size: dp(50), dp(50)
+                radius: [dp(18),]
+                pos_hint: {'x': 0.05, 'center_y': 0.5}
+
+            MDLabel:
+                text: root.header_head
+                pos_hint: {'x': 0.3, 'center_y': 0.5}
+                font_size: 18
+                halign: 'left'
+                text_size: dp(200), None
+                width: dp(200)
+                shorten: True
+                shorten_from: 'right'
+
+        MDNavigationDrawerDivider:
+            padding: 0
+
+        MDNavigationDrawerItem:
+            icon: "account-cog"
+            focus_color: app.colors['SecondColor']
+            unfocus_color: app.colors['AccentColor']
+            text: "Профиль"
+            text_color: app.colors['MainColor']
+            font_size: 16
+            selected_color: app.colors['MainColor']
+            on_press: root.show_profile_dialog()
+
+        MDNavigationDrawerItem:
+            icon: "cog"
+            focus_color: app.colors['SecondColor']
+            unfocus_color: app.colors['AccentColor']
+            text: "Настройки"
+            text_color: app.colors['MainColor']
+            font_size: 16
+            selected_color: app.colors['MainColor']
+            on_press: app.screen_manager.switch_screen('settings_screen')
+
+        MDNavigationDrawerItem:
+            icon: "account-arrow-left"
+            focus_color: app.colors['SecondColor']
+            unfocus_color: app.colors['AccentColor']
+            text: "Выйти"
+            text_color: app.colors['MainColor']
+            font_size: 16
+            selected_color: app.colors['MainColor']
+            on_press: root.sign_out()
+
+
+<Sidebar@SidebarNavigation>:
+    back_color: app.colors['AccentColor']
+    header_head: app.current_username
+    icon_source: app.current_avatar_url
+
+
+
+<MainMobileView>:
+    MDScreen:
+        MDNavigationLayout:
+
+            MDScreenManager:
+
+                MDScreen:
+
+                    MainBackground:
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            MDFloatLayout:
+                                size_hint_y: 0.10
+                                MDIconButton:
+                                    icon: "menu"
+                                    pos_hint: {"x": 0.03, "center_y": 0.5}
+                                    on_press: nav_drawer.set_state("open")
+                                TextInputRound:
+                                    id: search
+                                    pos_hint: {"right": 0.95, "center_y": 0.5}
+                                    size_hint: 0.8, 0.6
+                                    back_color: app.colors["SearchColor"]
+                                    text_color: app.colors["MainColor"]
+                                    hint_text: "Поиск"
+                                    
+                            RecycleView:
+                                size_hint_y: 0.9
+                                data: app.display_viewset
+                                viewclass: 'ChatItem'
+                                do_scroll_x: False
+                                do_scroll_y: True
+                                scroll_wheel_distance: 50
+                                smooth_scroll_end: 15
+                                RecycleBoxLayout:
+                                    orientation: "vertical"
+                                    size_hint_y: None
+                                    height: self.minimum_size[1]
+                                    default_size_hint: 1, None
+                                    default_size: None, None
+
+
+            Sidebar:
+                id: nav_drawer
+
+<MainTabletView>:
+    MDScreen:
+        MDNavigationLayout:
+
+            MDScreenManager:
+
+                MDScreen:
+
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                    
+                        MainBackground:
+                            size_hint_x: None
+                            width: dp(300)
+                            MDBoxLayout:
+                                orientation: 'vertical'
+                                MDFloatLayout:
+                                    size_hint_y: 0.10
+                                    MDIconButton:
+                                        icon: "menu"
+                                        pos_hint: {"x": 0.03, "center_y": 0.5}
+                                        on_press: nav_drawer.set_state("open")
+                                    TextInputRound:
+                                        id: search
+                                        pos_hint: {"right": 0.95, "center_y": 0.5}
+                                        size_hint: 0.75, 0.6
+                                        back_color: app.colors["SearchColor"]
+                                        text_color: app.colors["MainColor"]
+                                        hint_text: "Поиск"
+                                        
+                                RecycleView:
+                                    size_hint_y: 0.9
+                                    data: app.display_viewset
+                                    viewclass: 'ChatItem'
+                                    do_scroll_x: False
+                                    do_scroll_y: True
+                                    scroll_wheel_distance: 50
+                                    smooth_scroll_end: 15
+                                    RecycleBoxLayout:
+                                        orientation: "vertical"
+                                        size_hint_y: None
+                                        height: self.minimum_size[1]
+                                        default_size_hint: 1, None
+                                        default_size: None, None
+                        MessagesLayout:
+                            id: messages_screen
+
+            Sidebar:
+                id: nav_drawer
+
+<MainDesktopView>:
+    MDScreen:
+        MDNavigationLayout:
+
+            MDScreenManager:
+
+                MDScreen:
+
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                    
+                        MainBackground:
+                            size_hint_x: None
+                            width: dp(300)
+                            MDBoxLayout:
+                                orientation: 'vertical'
+                                MDFloatLayout:
+                                    size_hint_y: None
+                                    height: dp(60)
+                                    MDIconButton:
+                                        icon: "menu"
+                                        pos_hint: {"x": 0.03, "center_y": 0.5}
+                                        on_press: nav_drawer.set_state("open")
+                                    TextInputRound:
+                                        id: search
+                                        pos_hint: {"right": 0.95, "center_y": 0.5}
+                                        size_hint: 0.75, 0.6
+                                        back_color: app.colors["SearchColor"]
+                                        text_color: app.colors["MainColor"]
+                                        hint_text: "Поиск"
+                                        
+                                RecycleView:
+                                    size_hint_y: 0.9
+                                    data: app.display_viewset
+                                    viewclass: 'ChatItem'
+                                    do_scroll_x: False
+                                    do_scroll_y: True
+                                    scroll_wheel_distance: 50
+                                    smooth_scroll_end: 15
+                                    RecycleBoxLayout:
+                                        orientation: "vertical"
+                                        size_hint_y: None
+                                        height: self.minimum_size[1]
+                                        default_size_hint: 1, None
+                                        default_size: None, None
+                        MessagesLayout:
+                            id: messages_screen
+
+            Sidebar:
+                id: nav_drawer

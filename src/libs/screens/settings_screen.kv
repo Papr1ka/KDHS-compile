@@ -1,0 +1,113 @@
+#:kivy 2.1.0
+#:import SettingsToolbar libs.screens.settings_screen.SettingsToolbar
+#:set font "Nunito"
+
+<SettingsScreen>:
+    name: 'settings_screen'
+    SettingsScreenBase:
+        id: base
+
+<Field@MDTextField>:
+    mode: "fill"
+    line_color_normal: app.colors["UpLineColor"]
+    line_color_focus: app.colors["UpLineColor"]
+    fill_color_normal: (1, 0, 0, 0)
+    fill_color_focus: (1, 0, 0, 0)
+    font_size: 24
+    font_name: "InterM"
+    font_name_helper_text: "InterM"
+    line_color_focus: app.colors["MainColor"]
+    hint_text_color_focus: app.colors["MainColor"]
+    text_color_normal: app.colors["MainColor"]
+    text_color_focus: app.colors["MainColor"]
+
+<SettingsScreenBase@MDRelativeLayout>:
+    md_bg_color: app.colors["MassageScreenColor"]
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            id: toolbar
+            title: "Настройки"
+            left_action_items: [["arrow-left", lambda x: app.screen_manager.switch_screen('main_screen')]]
+            md_bg_color: app.colors["UpLineColor"]
+            text_color: app.colors['MainColor']
+        MDScrollView:
+            do_scroll_y: True
+            do_scroll_x: False
+            size_hint_x: None
+            width: dp(360)
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            MDBoxLayout:
+                orientation: 'vertical'
+                id: op
+                size_hint: None, None
+                width: dp(320)
+                height: sum([i.height for i in self.children])
+                pos_hint: {'center_x': 0.5, 'top': 1}
+                spacing: dp(20)
+                Widget:
+                    height: dp(10)
+                MDBoxLayout:
+                    # md_bg_color: (1, 0, 0, 0.1)ы
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: dp(80)
+                    spacing: dp(20)
+
+                    MDFlatButton:
+                        id: avatar
+                        size_hint: None, None
+                        size: dp(80), dp(80)
+                        radius: [dp(64)]
+                        FitImage:
+                            source: app.current_avatar_url
+                            size_hint: None, None
+                            size: self.parent.size
+                            radius: [dp(64)]
+                            pos: self.parent.pos
+
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        MDLabel:
+                            text: app.current_display_name
+                            font_size: 24
+                            font_name: "InterM"
+                        MDLabel:
+                            text: "@" + app.current_username
+                            font_size: 20
+                            font_name: "InterR"
+                MDLabel:
+                    text: "Профиль"
+                    font_size: 14
+                    font_name: "InterR"
+                Field:
+                    id: status
+                    text: app.current_status
+                    hint_text: "Статус"
+                    max_text_length: 100
+                Field:
+                    id: display_name
+                    text: app.current_display_name
+                    hint_text: "Отображаемое имя"
+                    max_text_length: 32
+                MDLabel:
+                    text: "Уведомления"
+                    font_size: 14
+                    font_name: "InterR"
+                MDBoxLayout:
+                    padding: [dp(20), 0, dp(20), 0]
+                    orientation: 'horizontal'
+                    MDLabel:
+                        text: "Включить"
+                        font_size: 24
+                        font_name: "InterM"
+                    MDSwitch:
+                        id: notifications_switch
+                        active: app.notifications
+                        on_active: root.parent.change_notify_state()
+                        thumb_color_active: app.colors['SearchColor']
+                        thumb_color_inactive: app.colors['SearchColor']
+                        track_color_active: app.colors['AccentColor']
+                        track_color_inactive: app.colors['AccentColor']
+                Widget:
+                    height: dp(20)

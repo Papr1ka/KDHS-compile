@@ -1,0 +1,19 @@
+#:kivy 2.1.0
+#:set font "Nunito"
+
+<ChatBubble>:
+    adaptive_height: True
+    padding: [dp(8), dp(8)]
+    text_color: app.colors["MainColor"]
+    size_hint_x: None
+    halign: self.halign
+    font_name: font
+    text_size: self.width, None
+    canvas.before:
+        Color:
+            rgba: app.colors['AccentColor']
+        RoundedRectangle:
+            radius: [16]
+            pos: self.pos if root.halign == 'left' else [self.pos[0] + self.text_size[0] - self.text_width, self.pos[1]]
+            # size: self.texture_size
+            size: self.text_width, self.texture_size[1]
